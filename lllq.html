@@ -1,0 +1,598 @@
+<style>
+  :root{
+    --paper:#F4EFE3;
+    --ink:#232C24;
+    --teal:#1D4A46;
+    --teal-deep:#123230;
+    --ochre:#C4903A;
+    --ochre-soft:#EAD9B8;
+    --rust:#A8492F;
+    --sage:#DDE6D6;
+    --line: rgba(35,44,36,0.14);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  #lq-root {
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100%;
+    padding: 32px 16px 48px;
+    display: flex;
+    justify-content: center;
+  }
+  #lq-shell {
+    width: 100%;
+    max-width: 620px;
+  }
+  .lq-masthead {
+    border-bottom: 2px solid var(--teal);
+    padding-bottom: 18px;
+    margin-bottom: 26px;
+  }
+  .lq-kicker {
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.02em;
+    margin: 0 0 6px;
+  }
+  .lq-title {
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size: 30px;
+    line-height: 1.15;
+    margin: 0;
+    color: var(--teal-deep);
+  }
+  .lq-nav {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+  }
+  .lq-nav button {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .lq-nav button.active {
+    background: var(--teal);
+    color: var(--paper);
+    border-color: var(--teal);
+  }
+  .lq-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px;
+  }
+  .lq-lead {
+    font-size: 15px;
+    line-height: 1.55;
+    margin: 0 0 18px;
+  }
+  .lq-field label {
+    display: block;
+    font-size: 13px;
+    color: var(--teal-deep);
+    margin-bottom: 6px;
+  }
+  .lq-field input[type="text"], .lq-field input[type="password"] {
+    width: 100%;
+    padding: 11px 12px;
+    font-size: 15px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: inherit;
+    margin-bottom: 16px;
+  }
+  .lq-btn {
+    font-family: inherit;
+    font-size: 15px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    border: none;
+    background: var(--teal);
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .lq-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .lq-btn.ghost {
+    background: transparent;
+    color: var(--teal);
+    border: 1px solid var(--teal);
+  }
+  .lq-btn.rust {
+    background: var(--rust);
+  }
+  .lq-progress-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--teal-deep);
+    margin-bottom: 10px;
+  }
+  .lq-progress-track {
+    height: 6px;
+    background: var(--ochre-soft);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 22px;
+  }
+  .lq-progress-fill {
+    height: 100%;
+    background: var(--ochre);
+    transition: width 0.35s ease;
+  }
+  .lq-question {
+    font-size: 17px;
+    line-height: 1.45;
+    margin: 0 0 18px;
+    color: var(--teal-deep);
+  }
+  .lq-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+  .lq-option:hover { border-color: var(--ochre); }
+  .lq-option.selected {
+    border-color: var(--teal);
+    background: var(--sage);
+  }
+  .lq-option.correct {
+    border-color: #4B7A4E;
+    background: #E3EEDF;
+  }
+  .lq-option.incorrect {
+    border-color: var(--rust);
+    background: #F5E4DE;
+  }
+  .lq-option input { margin-top: 3px; }
+  .lq-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  .lq-hint {
+    font-size: 13px;
+    color: #5b665b;
+    margin-top: -8px;
+    margin-bottom: 18px;
+  }
+  .lq-score-big {
+    font-family: Georgia, serif;
+    font-size: 52px;
+    color: var(--teal-deep);
+    margin: 6px 0 2px;
+  }
+  .lq-score-label {
+    font-size: 14px;
+    color: #5b665b;
+    margin-bottom: 22px;
+  }
+  table.lq-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  table.lq-table th {
+    text-align: left;
+    font-size: 12px;
+    color: #5b665b;
+    font-weight: 500;
+    border-bottom: 1px solid var(--line);
+    padding: 8px 6px;
+  }
+  table.lq-table td {
+    padding: 9px 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  .lq-empty {
+    text-align: center;
+    color: #5b665b;
+    padding: 30px 10px;
+    font-size: 14px;
+  }
+  .lq-stat-row {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .lq-stat {
+    flex: 1;
+    min-width: 120px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .lq-stat .n {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    color: var(--teal-deep);
+  }
+  .lq-stat .l {
+    font-size: 12px;
+    color: #5b665b;
+  }
+  .lq-error {
+    color: var(--rust);
+    font-size: 13px;
+    margin: -8px 0 14px;
+  }
+  .lq-loading {
+    text-align: center;
+    padding: 40px 0;
+    color: #5b665b;
+    font-size: 14px;
+  }
+</style>
+
+<div id="lq-root">
+  <div id="lq-shell">
+    <div class="lq-masthead">
+      <p class="lq-kicker">Unit 7 · Children's Learning Perspectives: Play</p>
+      <h1 class="lq-title">Lesson 1 Quiz — Approaches and Theoretical Perspectives to Children's Learning</h1>
+      <div class="lq-nav">
+        <button id="lq-nav-quiz" class="active">Take the quiz</button>
+        <button id="lq-nav-admin">Admin dashboard</button>
+      </div>
+    </div>
+    <div class="lq-card" id="lq-card"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const QUESTIONS = [
+    {
+      q: "A child dips a hand in fire, feels pain, and afterward treats anything red as dangerous. Which sense organs does the lesson say are at work here?",
+      options: ["Hearing and taste only", "Touch, sight, and possibly smell", "Sight and smell only", "Touch and hearing only"],
+      correct: 1
+    },
+    {
+      q: "The lesson explains that a child's language develops rapidly even without direct teaching, because of adult speech in the environment. Which way of learning does this illustrate?",
+      options: ["Through trial and error", "Through imitation", "Through practice and repetition", "Through exploration and discovery"],
+      correct: 1
+    },
+    {
+      q: "Which theorist held that children actively construct knowledge through interaction with their environment, and that play reflects their stage of cognitive development?",
+      options: ["Friedrich Froebel", "Lev Vygotsky", "Jean Piaget", "Loris Malaguzzi"],
+      correct: 2
+    },
+    {
+      q: "Which approach is credited to Friedrich Froebel and introduced 'gifts and occupations' as educational toys and activities?",
+      options: ["Montessori Approach", "Kindergarten Approach", "Reggio Emilia Approach", "High Scope Approach"],
+      correct: 1
+    },
+    {
+      q: "Which theoretical perspective focuses on observable behaviour shaped by stimuli, responses, and reinforcement, with strong emphasis on reward, punishment, and repetition?",
+      options: ["Cognitivism", "Socio-cultural theory", "Behaviourism", "Constructivist perspective"],
+      correct: 2
+    },
+    {
+      q: "In Vygotsky's socio-cultural theory, what does play create that lets a child perform beyond their current ability with guidance from others?",
+      options: ["A zone of proximal development", "A sensory-motor stage", "A stimulus-response chain", "A schema of assimilation"],
+      correct: 0
+    },
+    {
+      q: "Which international approach originated after World War II and emphasizes creativity, expression, and exploration, with parents and community playing a major role?",
+      options: ["Forest School approach", "Japanese Early Childhood approach", "Reggio Emilia approach", "Finnish education approach"],
+      correct: 2
+    },
+    {
+      q: "Which international approach is characterised by learning outdoors in a natural environment, risk-taking, independence, and is popularly associated with the UK and Denmark?",
+      options: ["Forest School approach", "High Scope approach", "The Whariki approach", "Montessori approach"],
+      correct: 0
+    },
+    {
+      q: "Which international approach, developed in the United States, uses a plan-do-review cycle and gives children freedom to choose their learning activities?",
+      options: ["Kindergarten Approach", "High Scope approach", "Reggio Emilia approach", "Finnish education approach"],
+      correct: 1
+    },
+    {
+      q: "Which of these is NOT listed among the lesson's strategies for promoting children's learning?",
+      options: ["Maintain a predictable daily schedule", "Encourage children to learn through play", "Discourage group work among children", "Promote social interaction among children"],
+      correct: 2
+    },
+    {
+      q: "Which approach, developed in New Zealand, is a holistic, play-based curriculum framework built around well-being, belonging, contribution, communication, and exploration?",
+      options: ["The Whariki approach", "Reggio Emilia approach", "Montessori approach", "Japanese Early Childhood approach"],
+      correct: 0
+    },
+    {
+      q: "Which theoretical perspective emphasizes that children are active learners who process information, reason, solve problems, and organise knowledge according to their developmental stage?",
+      options: ["Behaviourism", "Cognitivism", "Kindergarten Approach", "Forest School approach"],
+      correct: 1
+    }
+  ];
+
+  const ADMIN_CODE = "playlesson1";
+  const root = document.getElementById('lq-card');
+  const navQuiz = document.getElementById('lq-nav-quiz');
+  const navAdmin = document.getElementById('lq-nav-admin');
+
+  let state = {
+    view: 'start', // start | name | quiz | result | admin-gate | admin
+    name: '',
+    idx: 0,
+    answers: [], // selected option index per question, -1 if unanswered
+    locked: false // whether current question has been checked
+  };
+
+  function setNav(which){
+    navQuiz.classList.toggle('active', which === 'quiz');
+    navAdmin.classList.toggle('active', which === 'admin');
+  }
+
+  navQuiz.addEventListener('click', () => {
+    state = { view: 'start', name: '', idx: 0, answers: [], locked: false };
+    setNav('quiz');
+    render();
+  });
+  navAdmin.addEventListener('click', () => {
+    state.view = 'admin-gate';
+    setNav('admin');
+    render();
+  });
+
+  function esc(s){
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function render(){
+    if (state.view === 'start') return renderStart();
+    if (state.view === 'name') return renderName();
+    if (state.view === 'quiz') return renderQuiz();
+    if (state.view === 'result') return renderResult();
+    if (state.view === 'admin-gate') return renderAdminGate();
+    if (state.view === 'admin') return renderAdmin();
+  }
+
+  function renderStart(){
+    root.innerHTML = `
+      <p class="lq-lead">Twelve questions drawn only from Lesson 1: the different ways children learn, the theoretical perspectives behind play-based learning, and the international approaches to children's learning. Take your time — there's no clock.</p>
+      <button class="lq-btn" id="lq-start-btn">Start the quiz</button>
+    `;
+    document.getElementById('lq-start-btn').addEventListener('click', () => {
+      state.view = 'name';
+      render();
+    });
+  }
+
+  function renderName(){
+    root.innerHTML = `
+      <div class="lq-field">
+        <label for="lq-name-input">Your name</label>
+        <input type="text" id="lq-name-input" placeholder="e.g. Amaka Obi" autocomplete="off" />
+      </div>
+      <div class="lq-error" id="lq-name-error" style="display:none;">Enter your name to continue.</div>
+      <button class="lq-btn" id="lq-name-continue">Continue</button>
+    `;
+    const input = document.getElementById('lq-name-input');
+    input.focus();
+    const go = () => {
+      const val = input.value.trim();
+      if (!val){
+        document.getElementById('lq-name-error').style.display = 'block';
+        return;
+      }
+      state.name = val;
+      state.idx = 0;
+      state.answers = new Array(QUESTIONS.length).fill(-1);
+      state.locked = false;
+      state.view = 'quiz';
+      render();
+    };
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+    document.getElementById('lq-name-continue').addEventListener('click', go);
+  }
+
+  function renderQuiz(){
+    const i = state.idx;
+    const q = QUESTIONS[i];
+    const selected = state.answers[i];
+    const locked = state.locked;
+    const pct = Math.round((i / QUESTIONS.length) * 100);
+
+    let optionsHtml = q.options.map((opt, oi) => {
+      let cls = 'lq-option';
+      if (locked){
+        if (oi === q.correct) cls += ' correct';
+        else if (oi === selected) cls += ' incorrect';
+      } else if (oi === selected){
+        cls += ' selected';
+      }
+      return `<div class="${cls}" data-oi="${oi}">
+        <input type="radio" name="lq-opt" ${selected === oi ? 'checked' : ''} ${locked ? 'disabled' : ''} />
+        <span>${esc(opt)}</span>
+      </div>`;
+    }).join('');
+
+    root.innerHTML = `
+      <div class="lq-progress-row">
+        <span>Question ${i + 1} of ${QUESTIONS.length}</span>
+        <span>${state.name}</span>
+      </div>
+      <div class="lq-progress-track"><div class="lq-progress-fill" style="width:${pct}%"></div></div>
+      <p class="lq-question">${esc(q.q)}</p>
+      <div id="lq-options">${optionsHtml}</div>
+      <div class="lq-footer-row">
+        <span></span>
+        <button class="lq-btn" id="lq-next-btn" ${selected === -1 ? 'disabled' : ''}>
+          ${locked ? (i === QUESTIONS.length - 1 ? 'See results' : 'Next question') : 'Check answer'}
+        </button>
+      </div>
+    `;
+
+    if (!locked){
+      document.querySelectorAll('#lq-options .lq-option').forEach(el => {
+        el.addEventListener('click', () => {
+          state.answers[i] = parseInt(el.dataset.oi, 10);
+          render();
+        });
+      });
+    }
+
+    document.getElementById('lq-next-btn').addEventListener('click', () => {
+      if (state.answers[i] === -1) return;
+      if (!state.locked){
+        state.locked = true;
+        render();
+        return;
+      }
+      if (i < QUESTIONS.length - 1){
+        state.idx += 1;
+        state.locked = false;
+        render();
+      } else {
+        finishQuiz();
+      }
+    });
+  }
+
+  async function finishQuiz(){
+    const score = state.answers.reduce((acc, a, i) => acc + (a === QUESTIONS[i].correct ? 1 : 0), 0);
+    const total = QUESTIONS.length;
+    const percent = Math.round((score / total) * 100);
+    const record = {
+      name: state.name,
+      score,
+      total,
+      percent,
+      timestamp: new Date().toISOString()
+    };
+    state.lastResult = record;
+    state.view = 'result';
+    render();
+    try {
+      const key = 'quizresult:' + Date.now() + ':' + Math.random().toString(36).slice(2, 8);
+      await window.storage.set(key, JSON.stringify(record), true);
+    } catch (err) {
+      console.error('Could not save result', err);
+      const noteEl = document.getElementById('lq-save-note');
+      if (noteEl) noteEl.textContent = "Your score is shown below, but it couldn't be saved to the shared dashboard.";
+    }
+  }
+
+  function renderResult(){
+    const r = state.lastResult;
+    root.innerHTML = `
+      <p class="lq-lead" style="margin-bottom:2px;">Nice work, ${esc(r.name)}.</p>
+      <div class="lq-score-big">${r.score} / ${r.total}</div>
+      <div class="lq-score-label" id="lq-save-note">${r.percent}% — saved to the shared dashboard.</div>
+      <button class="lq-btn ghost" id="lq-retake-btn">Take it again</button>
+    `;
+    document.getElementById('lq-retake-btn').addEventListener('click', () => {
+      state = { view: 'start', name: '', idx: 0, answers: [], locked: false };
+      setNav('quiz');
+      render();
+    });
+  }
+
+  function renderAdminGate(){
+    root.innerHTML = `
+      <p class="lq-lead">Enter the admin passcode to view everyone's results.</p>
+      <div class="lq-field">
+        <label for="lq-admin-pass">Passcode</label>
+        <input type="password" id="lq-admin-pass" autocomplete="off" />
+      </div>
+      <div class="lq-error" id="lq-admin-error" style="display:none;">Incorrect passcode.</div>
+      <button class="lq-btn" id="lq-admin-enter">Enter</button>
+    `;
+    const input = document.getElementById('lq-admin-pass');
+    input.focus();
+    const go = () => {
+      if (input.value === ADMIN_CODE){
+        state.view = 'admin';
+        render();
+      } else {
+        document.getElementById('lq-admin-error').style.display = 'block';
+      }
+    };
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+    document.getElementById('lq-admin-enter').addEventListener('click', go);
+  }
+
+  async function renderAdmin(){
+    root.innerHTML = `<div class="lq-loading">Loading results…</div>`;
+    let records = [];
+    try {
+      const listing = await window.storage.list('quizresult:', true);
+      const keys = (listing && listing.keys) || [];
+      const gets = await Promise.all(keys.map(k => window.storage.get(k, true).catch(() => null)));
+      records = gets
+        .filter(Boolean)
+        .map(g => {
+          try { return JSON.parse(g.value); } catch { return null; }
+        })
+        .filter(Boolean)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    } catch (err) {
+      console.error(err);
+      root.innerHTML = `<div class="lq-empty">Couldn't load results right now. Try again shortly.</div>`;
+      return;
+    }
+
+    if (records.length === 0){
+      root.innerHTML = `<div class="lq-empty">No one has taken the quiz yet.</div>`;
+      return;
+    }
+
+    const avg = Math.round(records.reduce((a, r) => a + r.percent, 0) / records.length);
+    const top = records.reduce((a, r) => r.percent > a.percent ? r : a, records[0]);
+
+    const rows = records.map(r => `
+      <tr>
+        <td>${esc(r.name)}</td>
+        <td>${r.score}/${r.total}</td>
+        <td>${r.percent}%</td>
+        <td>${new Date(r.timestamp).toLocaleString()}</td>
+      </tr>
+    `).join('');
+
+    root.innerHTML = `
+      <div class="lq-stat-row">
+        <div class="lq-stat"><div class="n">${records.length}</div><div class="l">Attempts recorded</div></div>
+        <div class="lq-stat"><div class="n">${avg}%</div><div class="l">Average score</div></div>
+        <div class="lq-stat"><div class="n">${top.percent}%</div><div class="l">Top score (${esc(top.name)})</div></div>
+      </div>
+      <table class="lq-table">
+        <thead><tr><th>Name</th><th>Score</th><th>%</th><th>Submitted</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="lq-footer-row">
+        <button class="lq-btn ghost" id="lq-refresh-btn">Refresh</button>
+        <button class="lq-btn rust" id="lq-clear-btn">Clear all results</button>
+      </div>
+    `;
+    document.getElementById('lq-refresh-btn').addEventListener('click', renderAdmin);
+    document.getElementById('lq-clear-btn').addEventListener('click', async () => {
+      if (!confirm('Delete all recorded quiz results? This cannot be undone.')) return;
+      try {
+        const listing = await window.storage.list('quizresult:', true);
+        const keys = (listing && listing.keys) || [];
+        await Promise.all(keys.map(k => window.storage.delete(k, true).catch(() => null)));
+        renderAdmin();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
+
+  render();
+})();
+</script>
