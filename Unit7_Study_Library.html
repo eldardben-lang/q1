@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Unit 7 Study Library</title>
+<style>
+  :root{
+    --navy:#002060; --navy-light:#0a2c7a; --cyan:#00b0f0; --cyan-light:#e6f7fd;
+    --gold:#e8a33d; --grey:#5c6472; --lgrey:#e2e5ea; --bg:#f5f7fb;
+    --green:#0f9d58; --green-bg:#e8f7ee; --red:#d64545; --red-bg:#fdecec;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg); color:#1a1a1a; -webkit-tap-highlight-color:transparent;
+  }
+  header{
+    background:var(--navy); color:#fff; padding:18px 16px; display:flex; align-items:center; gap:12px;
+  }
+  header .badge{
+    width:40px; height:40px; border-radius:50%; background:var(--cyan);
+    display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;
+  }
+  header h1{font-size:17px; margin:0; line-height:1.2;}
+  header p{font-size:12px; margin:2px 0 0; color:#bfd6f5;}
+
+  .container{max-width:720px; margin:0 auto; padding:14px 14px 40px;}
+
+  .lesson-tabs{display:flex; gap:8px; margin-bottom:14px;}
+  .lesson-tab{
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+    padding:10px 4px; border-radius:12px; border:1px solid var(--lgrey); background:#fff;
+    font-size:12px; font-weight:700; color:var(--grey); cursor:pointer; transition:.15s;
+  }
+  .lesson-tab .ic{font-size:17px;}
+  .lesson-tab.active{background:var(--navy); border-color:var(--navy); color:#fff;}
+
+  .lesson-info{
+    display:flex; align-items:center; gap:12px; background:#fff; border-radius:12px;
+    padding:12px 14px; margin-bottom:14px; box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  .lesson-info .icon-circle{
+    width:38px; height:38px; border-radius:50%; background:var(--cyan-light); color:var(--cyan);
+    display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;
+  }
+  .lesson-info .code{font-size:11px; color:#9aa3af; margin:0;}
+  .lesson-info .title{font-size:14px; font-weight:700; color:#1e293b; margin:1px 0 0;}
+
+  .sub-tabs{display:flex; gap:4px; border-bottom:1px solid var(--lgrey); margin-bottom:16px;}
+  .sub-tab{
+    padding:10px 16px; font-size:14px; font-weight:600; color:#94a3b8; background:none; border:none;
+    border-bottom:2px solid transparent; cursor:pointer; display:flex; align-items:center; gap:6px;
+  }
+  .sub-tab.active{color:var(--cyan); border-color:var(--cyan);}
+
+  .card{
+    background:#fff; border-radius:12px; padding:16px; margin-bottom:14px;
+    box-shadow:0 1px 3px rgba(0,0,0,.06);
+  }
+  .card h3{color:var(--navy); font-size:15px; margin:0 0 8px;}
+  .card p{color:#54607a; font-size:13.5px; line-height:1.55; margin:0 0 10px;}
+  .card ul{list-style:none; margin:0 0 4px; padding:0;}
+  .card li{
+    color:#54607a; font-size:13.5px; line-height:1.55; margin-bottom:7px;
+    padding-left:18px; position:relative;
+  }
+  .card li::before{content:"›"; position:absolute; left:0; top:0; color:var(--cyan); font-weight:700;}
+
+  .quiz-banner{
+    background:var(--cyan-light); border:1px solid #bfe8fb; border-radius:12px; padding:14px 16px;
+    margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; gap:10px;
+  }
+  .quiz-banner .t1{font-size:13.5px; font-weight:700; color:#334155; margin:0;}
+  .quiz-banner .t2{font-size:11.5px; color:#64748b; margin:2px 0 0;}
+  .quiz-banner .score{font-size:22px; font-weight:800; color:var(--navy); white-space:nowrap;}
+
+  .q-card{background:#fff; border-radius:12px; padding:14px; margin-bottom:12px; box-shadow:0 1px 3px rgba(0,0,0,.06);}
+  .q-text{font-size:14px; font-weight:600; color:#1e293b; margin:0 0 10px;}
+  .q-text .qn{color:var(--navy); margin-right:5px;}
+  .opt{
+    display:block; width:100%; text-align:left; padding:10px 12px; margin-bottom:8px;
+    border-radius:9px; border:1.5px solid var(--lgrey); background:#fff; font-size:13.5px; color:#334155;
+    cursor:pointer; transition:.12s;
+  }
+  .opt:last-child{margin-bottom:0;}
+  .opt.selected{border-color:var(--cyan); background:var(--cyan-light); color:#075985; font-weight:600;}
+  .opt.correct{border-color:#34d399; background:var(--green-bg); color:#047857; font-weight:600;}
+  .opt.wrong{border-color:#fca5a5; background:var(--red-bg); color:#b91c1c;}
+  .opt:disabled{cursor:default;}
+  .explain{font-size:12px; color:#64748b; font-style:italic; margin:10px 0 0; display:flex; gap:6px; align-items:flex-start;}
+  .explain .mark{flex-shrink:0; font-weight:800;}
+  .explain .mark.ok{color:#0f9d58;}
+  .explain .mark.no{color:#d64545;}
+
+  .btn-primary{
+    width:100%; background:var(--navy); color:#fff; border:none; border-radius:10px; padding:14px;
+    font-size:15px; font-weight:700; cursor:pointer; margin-top:4px;
+  }
+  .btn-primary:disabled{background:#cbd5e1; cursor:default;}
+  .btn-secondary{
+    width:100%; background:#475569; color:#fff; border:none; border-radius:10px; padding:14px;
+    font-size:15px; font-weight:700; cursor:pointer; margin-top:4px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+
+  @media (min-width:600px){
+    .lesson-tab{font-size:13px; padding:12px 4px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">📚</div>
+  <div>
+    <h1>Unit 7 Study Library</h1>
+    <p>Children's Learning Perspectives: Play</p>
+  </div>
+</header>
+
+<div class="container">
+  <div class="lesson-tabs" id="lessonTabs"></div>
+  <div class="lesson-info" id="lessonInfo"></div>
+  <div class="sub-tabs" id="subTabs"></div>
+  <div id="content"></div>
+</div>
+
+<script>
+/* =========================================================
+   READING CONTENT
+   ========================================================= */
+const LESSON1 = {
+  code: "Lesson 1.0", title: "Approaches and Theoretical Perspectives to Children's Learning", icon: "🧭",
+  sections: [
+    { heading: "Introduction", blocks: [
+      { type:"p", text:"Play is essential to children's learning in their early years. Children acquire language naturally through playing with parents, siblings and the people around them. They become socialised largely by imitating the elders in their environment, all in the name of play. As children grow, they play with virtually everything around them — and in doing so, learn a great deal about the environment in which they live." },
+      { type:"p", text:"This lesson gives an understanding of the different ways children learn, theoretical perspectives on children's learning, strategies to promote learning, and international perspectives and current frameworks for children's learning." },
+    ]},
+    { heading: "1.1 Different Ways Children Learn", blocks: [
+      { type:"p", text:"Children learn in many different ways at once — often without anyone deliberately teaching them." },
+      { type:"ul", items:[
+        "Through their sense organs: combining sight, touch and smell to make judgements — e.g. connecting the sight of a flame with the pain of touching it.",
+        "Through imitation: especially visible in language — children's speech develops quickly by imitating adults around them.",
+        "Through social interaction: interacting with parents, siblings and others teaches greetings, friendship and respect.",
+        "Through play: one of the greatest avenues for exploring the physical and social environment — counting, vocabulary, moulding objects.",
+        "Through observation (modelling): children copy both good and bad behaviour they see in parents.",
+        "Through practice and repetition: children repeatedly practise routines they see family members perform.",
+        "Through trial and error: seen when children attempt to climb, reach an object, or find their way through a space.",
+        "Learning by doing: children do what they see elders doing, not for perfection but for the joy of participating.",
+        "Through exploration and discovery: children learn about life by exploring their surroundings without being told.",
+        "Through storytelling and language: listening to stories, songs and conversations builds vocabulary and imagination.",
+        "Through creative activities: activities designed by practitioners to teach vital life lessons.",
+      ]},
+    ]},
+    { heading: "1.2 Theoretical Perspectives on Children's Learning", blocks: [
+      { type:"ul", items:[
+        "Cognitivism: focuses on how children think, understand, remember and process information as active learners.",
+        "Behaviourism: learning as a change in behaviour shaped by stimuli, response and reinforcement — reward, punishment, repetition and practice.",
+        "Jean Piaget (Constructivist perspective): children actively construct knowledge through interaction with their environment; play reflects and supports cognitive development.",
+        "Montessori Approach: child-centred learning using role-play, with children freely choosing activities to build independence and concentration.",
+        "Kindergarten Approach (Froebel): saw play as the highest form of learning; introduced 'gifts and occupations' and guided play with materials.",
+        "Reggio Emilia Approach: treats role-play as expression and communication; children seen as capable, creative and full of potential.",
+        "Socio-cultural theory (Vygotsky): social interaction and culture drive learning; play creates a 'zone of proximal development' with adult and peer scaffolding.",
+      ]},
+    ]},
+    { heading: "1.3 Strategies to Promote Children's Learning", blocks: [
+      { type:"ul", items:[
+        "Create a stimulating and child-friendly environment.",
+        "Encourage children to learn through play.",
+        "Promote social interaction among children.",
+        "Involve families and communities in the children's learning.",
+        "Adopt a child-centred learning approach.",
+        "Provide step-by-step support and gradually withdraw help.",
+        "Encourage children to learn by doing.",
+        "Frequently give positive reinforcement — praise, rewards, encouragement.",
+        "Encourage collaborative learning through group work and teamwork.",
+        "Create a language-rich environment — talking, storytelling, reading, questioning.",
+        "Maintain a predictable daily schedule so children feel secure and ready to learn.",
+      ]},
+    ]},
+    { heading: "1.4 International Approaches to Children's Learning", blocks: [
+      { type:"ul", items:[
+        "Montessori approach: independence, self-directed learning, hands-on activities.",
+        "Finnish education approach: equality, play and well-being; highly trained teachers; minimal testing.",
+        "Forest School approach: outdoor learning in a natural environment; risk-taking, independence, problem-solving.",
+        "Reggio Emilia approach: creativity, expression and exploration; strong roles for parents and community.",
+        "High Scope approach: active participatory learning through a plan-do-review cycle.",
+        "Japanese Early Childhood approach: group harmony, social skills and independence; less formal academic work.",
+        "Te Whāriki approach: New Zealand's holistic, play-based framework built on well-being, belonging, contribution, communication and exploration.",
+      ]},
+      { type:"p", text:"Benefits of an international approach: promotes holistic development; encourages child-centred, active learning; fosters global awareness and cultural sensitivity; supports emotional development; enhances social and collaborative skills; builds strong home-community relationships; makes learning fun and meaningful." },
+    ]},
+  ],
+};
+
+const LESSON2 = {
+  code: "Lesson 2.0", title: "Play and Play Environment", icon: "🧩",
+  sections: [
+    { heading: "2.1 Meaning of Play", blocks: [
+      { type:"p", text:"Play is a voluntary way children explore, understand and make sense of their world, developing physical, cognitive, social and emotional skills. It is intrinsically motivated, involves active engagement, and results in joyful discovery. Play is so important to child development that it is recognised as a right of the child in the Child Rights Act — every child is entitled to play appropriate to their age." },
+    ]},
+    { heading: "2.2 Children's Right to Play — Article 31", blocks: [
+      { type:"p", text:"Article 31 of the UN Convention on the Rights of the Child (CRC) recognises the right of every child to:" },
+      { type:"ul", items:[
+        "Rest and leisure.",
+        "Engage in play and recreational activities appropriate to their age.",
+        "Participate freely in cultural life and the arts.",
+      ]},
+    ]},
+    { heading: "2.3 How the ECCDE Centre Supports Play", blocks: [
+      { type:"ul", items:[
+        "Provides a play-friendly environment with indoor corners and outdoor features (swings, sandpits, slides, open space).",
+        "Provides different play materials suited to different ages.",
+        "Teaches cooperation, sharing, conflict resolution and turn-taking through peer play.",
+        "Develops gross and fine motor skills through dancing, jumping and running.",
+        "Allows free expression of ideas and emotions, promoting creativity and confidence.",
+        "Provides safe environments with child-friendly equipment and close supervision.",
+        "Promotes free play, guided play, group play, role-play and imaginative storytelling.",
+        "Treats play as the method of learning, not something separate from it.",
+        "Guides parents on supporting play at home.",
+      ]},
+    ]},
+    { heading: "2.4 Classification of Play", blocks: [
+      { type:"ul", items:[
+        "Child-initiated play: a self-directed, open-ended activity the child engages in by their own will, choosing how and with whom to play.",
+        "Adult-led play: a structured activity in which the adult guides children to stimulate specific developmental abilities.",
+      ]},
+    ]},
+    { heading: "2.5 The Five Types of Play", blocks: [
+      { type:"ul", items:[
+        "Physical play: running, jumping, climbing — develops gross motor skills.",
+        "Creative play: dancing, singing, drawing, building — builds dexterity, confidence and communication.",
+        "Imaginative play: pretend or dramatic play, such as cooking with sand or caring for a doll.",
+        "Sensory play: engages touch, sight, hearing, smell and reasoning.",
+        "Heuristic play: free exploration and experimentation with objects, driven by curiosity.",
+      ]},
+    ]},
+    { heading: "2.6 Characteristics of Play", blocks: [
+      { type:"ul", items:[
+        "Children are physically and mentally engaged when playing.",
+        "Children choose what, how, and with whom to play.",
+        "Play is intrinsically motivated.",
+        "Play is meaningful and relevant to the child.",
+        "Play is fun and exciting, involving humour and enjoyment.",
+        "It involves make-believe, creativity, and the ability to change rules.",
+        "It promotes physical strength, language skills, social competence and emotional skills.",
+        "Children are deeply involved and focused.",
+      ]},
+    ]},
+    { heading: "2.7 Resources and Improvisation", blocks: [
+      { type:"p", text:"Teaching and learning resources include both human resources (parents, teachers, community) and material resources (books, toys, blocks). Improvisation means making resources from locally available, low-cost materials:" },
+      { type:"ul", items:[
+        "Bottle caps used to make ropes for learning areas.",
+        "Old magazines and newspapers cut into alphabet or flashcards.",
+        "Plastic bottles, straws and cardboard built into simple models.",
+        "Leftover paper and fabric scraps used for art and recycling projects.",
+        "Old clothes turned into costumes for role play and storytelling.",
+      ]},
+    ]},
+    { heading: "2.8 Resources for Each Type of Play", blocks: [
+      { type:"ul", items:[
+        "Physical: climbing frames, slides, tyres, obstacle courses.",
+        "Sensory: playdough, sand, sensory bins, sound shakers.",
+        "Creative: cardboard boxes, blocks, paints, crayons, clay.",
+        "Imaginative: costumes, kitchen tools, old phones, blocks.",
+        "Heuristic: household and natural items — shells, cones, pebbles.",
+      ]},
+    ]},
+    { heading: "2.9 Indoor and Outdoor Play Environments", blocks: [
+      { type:"p", text:"Indoor play should be welcoming, clean and tidy, with defined learning corners, safe flooring, good lighting, and age-appropriate, accessible materials. Outdoor play needs a secure, fenced playground, natural elements, space for gross-motor and group games, and shade or weather protection." },
+      { type:"p", text:"Safety precautions for outdoor activities:" },
+      { type:"ul", items:[
+        "Adequate adult-child supervision ratios (e.g. one adult per 25 children).",
+        "A safe, enclosed playground free of hazards.",
+        "Weather precautions — shade, appropriate clothing.",
+        "A first aid kit accessible at all times, with a trained first aider present.",
+      ]},
+    ]},
+  ],
+};
+
+const LESSON3 = {
+  code: "Lesson 3.0", title: "Role of Play in Early Years", icon: "🌱",
+  sections: [
+    { heading: "3.1 Role of Play in Supporting Learning and Development", blocks: [
+      { type:"ul", items:[
+        "Cognitive development: enhances thinking, memory and attention span.",
+        "Social and emotional growth: negotiation, conflict resolution, cooperation, empathy and confidence.",
+        "Physical development: running, jumping and climbing build gross motor skills and coordination.",
+        "Language and literacy: communication skills grow through interaction with peers and adults.",
+        "Creativity and imagination: unstructured play encourages children to explore their own ideas.",
+        "Moral and value development: fairness, rules, respect for others, right and wrong behaviour.",
+        "Learning through experience: hands-on, meaningful engagement with the environment.",
+      ]},
+    ]},
+    { heading: "3.2 Impact of Play Deprivation", blocks: [
+      { type:"p", text:"Depriving children of ample opportunity to play has a devastating impact on their learning and development:" },
+      { type:"ul", items:[
+        "Cognitive decline: poor problem-solving, difficulty with numbers, patterns and shapes.",
+        "Social skill deficits: difficulty making friends, sharing and cooperating.",
+        "Reduced creativity and imagination: difficulty thinking flexibly or generating new ideas.",
+        "Poor physical development: delayed motor skills, poor balance and coordination.",
+        "Weak academic foundation: poor attention, motivation and school readiness.",
+        "Emotional and behavioural problems: frustration, anxiety, low self-esteem.",
+        "Language and communication difficulties: poor vocabulary and expression.",
+        "Difficulty coping with real-life situations: weak decision-making strategies.",
+      ]},
+    ]},
+    { heading: "3.3 Preparing Early Years Settings to Support the Right to Play", blocks: [
+      { type:"ul", items:[
+        "Organise a child-friendly environment with clearly divided play areas.",
+        "Plan for different types of play — free, guided, physical, imaginative, social.",
+        "Provide rich, open-ended materials — blocks, puzzles, natural materials.",
+        "Allow flexible, adequate, uninterrupted time for play.",
+        "Develop outdoor play spaces with easy indoor-outdoor access.",
+        "Train teachers to observe, ask open-ended questions and guide rather than control.",
+        "Encourage independence — let children choose activities and materials.",
+        "Build partnership with parents to extend play beyond the classroom.",
+      ]},
+    ]},
+    { heading: "3.4 The Early Years Practitioner's Role in Socialization", blocks: [
+      { type:"ul", items:[
+        "Modelling social skills such as respect, kindness and positive interaction.",
+        "Fostering secure attachments through a safe, nurturing play environment.",
+        "Teaching children to identify problems, express emotions and find solutions together.",
+        "Promoting inclusion so every child can participate in play.",
+        "Supporting emotional regulation — helping children recognise and manage feelings.",
+        "Establishing clear routines so children understand expectations for behaviour.",
+      ]},
+    ]},
+  ],
+};
+
+/* =========================================================
+   QUIZ DATA
+   ========================================================= */
+const QUIZ1 = [
+  { q:"Which way of learning is illustrated when a child copies the speech patterns of adults around them?", options:["Trial and error","Imitation","Exploration and discovery","Creative activities"], correct:1, explanation:"Imitation is especially visible in language development." },
+  { q:"According to Piaget's constructivist perspective, how do children build knowledge?", options:["By memorising facts","By passively absorbing information","By actively constructing knowledge through interaction with their environment","By waiting for formal schooling"], correct:2, explanation:"Piaget saw children as active learners who construct knowledge through discovery." },
+  { q:"Which theorist introduced the 'zone of proximal development'?", options:["Jean Piaget","Lev Vygotsky","Maria Montessori","Friedrich Froebel"], correct:1, explanation:"Vygotsky's socio-cultural theory centres on this concept." },
+  { q:"Which approach introduced 'gifts and occupations' as educational tools?", options:["Reggio Emilia","Montessori","Kindergarten (Froebel)","High Scope"], correct:2, explanation:"Froebel's approach introduced these structured educational toys and activities." },
+  { q:"Which is a strategy to promote children's learning mentioned in the manual?", options:["Minimising social interaction","Removing praise","Creating a language-rich environment","An unpredictable daily schedule"], correct:2, explanation:"A language-rich environment is one of the eleven listed strategies." },
+  { q:"The Forest School approach is best known for emphasising:", options:["Formal indoor testing","Outdoor learning in a natural environment","Digital-only instruction","Strict lectures"], correct:1, explanation:"Forest School encourages independence and problem-solving outdoors." },
+  { q:"Which approach originated in New Zealand around well-being, belonging and exploration?", options:["Te Whāriki","High Scope","Reggio Emilia","Japanese Early Childhood"], correct:0, explanation:"Te Whāriki is New Zealand's holistic, play-based framework." },
+  { q:"Which is a benefit of an international approach to children's learning?", options:["Discourages family involvement","Fosters global awareness and cultural sensitivity","Limits learning to one style","Reduces holistic development"], correct:1, explanation:"International approaches foster global awareness, among other benefits." },
+  { q:"Which perspective focuses on behaviour shaped by stimuli and reinforcement?", options:["Cognitivism","Behaviourism","Socio-cultural theory","Reggio Emilia"], correct:1, explanation:"Behaviourism emphasises reward, repetition and reinforcement." },
+  { q:"The LEGO Foundation's 5 characteristics of playful learning include all EXCEPT:", options:["Joyful","Competitive","Meaningful","Socially interactive"], correct:1, explanation:"The five are joyful, meaningful, actively engaging, iterative, and socially interactive." },
+];
+
+const QUIZ2 = [
+  { q:"Play is best described in the manual as:", options:["A distraction from real learning","A voluntary, intrinsically motivated way children explore their world","A reward given after lessons","An activity limited to outdoors"], correct:1, explanation:"This is the manual's core definition of play." },
+  { q:"Article 31 of the UNCRC guarantees children's right to:", options:["Formal examinations from an early age","Rest, leisure, play and cultural participation","Unlimited screen time","Choosing their own curriculum"], correct:1, explanation:"Article 31 covers rest, leisure, play and cultural/artistic participation." },
+  { q:"Which best describes 'child-initiated play'?", options:["A structured activity designed by the teacher","Play driven by the child's own will and choice","Play that only happens outdoors","Play used only for assessment"], correct:1, explanation:"Child-initiated play is self-directed and open-ended." },
+  { q:"Which type of play involves free exploration of objects driven by curiosity?", options:["Physical play","Imaginative play","Heuristic play","Creative play"], correct:2, explanation:"Heuristic play is open-ended exploration driven by curiosity." },
+  { q:"Which of these is NOT a characteristic of play?", options:["Intrinsically motivated","Meaningful and relevant","Must always follow fixed, unchangeable rules","Fun and exciting"], correct:2, explanation:"Play characteristically allows children to change and invent rules." },
+  { q:"Improvising teaching and learning resources means:", options:["Buying only imported materials","Making resources from locally available, low-cost materials","Avoiding materials during play","Replacing play with worksheets"], correct:1, explanation:"Improvisation uses low-cost, locally available materials." },
+  { q:"A recommended safety precaution for outdoor play is:", options:["Reducing supervision to build independence","Maintaining adequate adult-child ratios","Removing shade to maximise space","Skipping weather checks"], correct:1, explanation:"Adequate supervision ratios (e.g. 1:25) are a key safety precaution." },
+  { q:"An enabling indoor play environment should include:", options:["Locked cabinets with no child access","Defined learning corners and accessible materials","One large room with no distinct areas","Only digital materials"], correct:1, explanation:"Defined, labelled corners with accessible materials support good indoor play." },
+];
+
+const QUIZ3 = [
+  { q:"Which is one of the seven areas where play supports development?", options:["Financial literacy","Cognitive development","Advanced mathematics","Formal test-taking"], correct:1, explanation:"Cognitive development is one of the 7 areas play supports." },
+  { q:"A likely impact of play deprivation is:", options:["Improved academic readiness","Enhanced creativity","Poor social skill development","Stronger emotional regulation"], correct:2, explanation:"Play deprivation is linked to social skill deficits." },
+  { q:"A recommended strategy for preparing Early Years settings is:", options:["Locking away open-ended materials","Allowing flexible, uninterrupted time for play","Replacing free play with worksheets","Discouraging teacher training on play"], correct:1, explanation:"Flexible, adequate play time is one of the 8 preparation strategies." },
+  { q:"Which best describes the EYP's role in socialization?", options:["Avoiding involvement in conflicts","Modelling social skills like respect and kindness","Discouraging group play","Focusing only on silent, individual activities"], correct:1, explanation:"Modelling social skills is a core part of the EYP's role." },
+  { q:"Play deprivation can lead to:", options:["Stronger language skills","Weak academic foundation and poor school readiness","Increased emotional regulation","Better physical development"], correct:1, explanation:"Deprivation is linked to weaker academic readiness, among other impacts." },
+  { q:"Supporting emotional regulation mainly involves:", options:["Ignoring expressed emotions","Helping children recognise and manage feelings","Punishing emotional expression","Removing all routines"], correct:1, explanation:"EYPs help children recognise and manage their own and others' feelings." },
+  { q:"Establishing clear routines mainly helps children:", options:["Memorise arbitrary rules","Understand expectations for behaviour and interaction","Avoid social interaction","Learn only through repetition"], correct:1, explanation:"Clear routines help children know what to expect." },
+  { q:"Which is a role of play in supporting development?", options:["Reducing language development","Encouraging moral and value development","Preventing creativity","Isolating children from peers"], correct:1, explanation:"Play supports moral and value development through fairness and rules." },
+];
+
+const LESSONS = [
+  Object.assign({}, LESSON1, { quiz: QUIZ1 }),
+  Object.assign({}, LESSON2, { quiz: QUIZ2 }),
+  Object.assign({}, LESSON3, { quiz: QUIZ3 }),
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let currentLesson = 0;
+let currentTab = "read";
+// per-lesson quiz progress, so switching tabs/lessons doesn't lose answers
+const quizState = LESSONS.map(l => ({ answers: Array(l.quiz.length).fill(null), submitted: false }));
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function esc(s){
+  const d = document.createElement("div");
+  d.innerText = s;
+  return d.innerHTML;
+}
+
+function renderLessonTabs(){
+  const el = document.getElementById("lessonTabs");
+  el.innerHTML = LESSONS.map((l,i) => `
+    <button class="lesson-tab ${i===currentLesson?'active':''}" onclick="selectLesson(${i})">
+      <span class="ic">${l.icon}</span>${l.code}
+    </button>
+  `).join("");
+}
+
+function renderLessonInfo(){
+  const l = LESSONS[currentLesson];
+  document.getElementById("lessonInfo").innerHTML = `
+    <div class="icon-circle">${l.icon}</div>
+    <div>
+      <p class="code">${l.code}</p>
+      <p class="title">${esc(l.title)}</p>
+    </div>
+  `;
+}
+
+function renderSubTabs(){
+  document.getElementById("subTabs").innerHTML = `
+    <button class="sub-tab ${currentTab==='read'?'active':''}" onclick="selectTab('read')">📖 Read</button>
+    <button class="sub-tab ${currentTab==='quiz'?'active':''}" onclick="selectTab('quiz')">📝 Practice Quiz</button>
+  `;
+}
+
+function renderContent(){
+  const container = document.getElementById("content");
+  if(currentTab === "read"){
+    container.innerHTML = renderReadHtml(LESSONS[currentLesson]);
+  } else {
+    container.innerHTML = renderQuizHtml(currentLesson);
+    attachQuizHandlers(currentLesson);
+  }
+}
+
+function renderReadHtml(lesson){
+  return lesson.sections.map(sec => `
+    <div class="card">
+      <h3>${esc(sec.heading)}</h3>
+      ${sec.blocks.map(b => {
+        if(b.type === "p"){
+          return `<p>${esc(b.text)}</p>`;
+        } else {
+          return `<ul>${b.items.map(it => `<li>${esc(it)}</li>`).join("")}</ul>`;
+        }
+      }).join("")}
+    </div>
+  `).join("");
+}
+
+function renderQuizHtml(lessonIdx){
+  const lesson = LESSONS[lessonIdx];
+  const state = quizState[lessonIdx];
+  const answered = state.answers.filter(a => a !== null).length;
+  const allAnswered = answered === lesson.quiz.length;
+  const score = state.submitted
+    ? lesson.quiz.reduce((s,q,i) => s + (state.answers[i] === q.correct ? 1 : 0), 0)
+    : 0;
+
+  let html = `
+    <div class="quiz-banner">
+      <div>
+        <p class="t1">Practice Quiz</p>
+        <p class="t2">Untimed, unlimited attempts — just for your own revision.</p>
+      </div>
+      ${state.submitted ? `<div class="score">${score}/${lesson.quiz.length}</div>` : ""}
+    </div>
+  `;
+
+  lesson.quiz.forEach((q, qi) => {
+    html += `<div class="q-card">
+      <p class="q-text"><span class="qn">${qi+1}.</span>${esc(q.q)}</p>`;
+    q.options.forEach((opt, oi) => {
+      let cls = "opt";
+      const selected = state.answers[qi] === oi;
+      if(state.submitted && oi === q.correct) cls += " correct";
+      else if(state.submitted && selected && oi !== q.correct) cls += " wrong";
+      else if(!state.submitted && selected) cls += " selected";
+      html += `<button class="${cls}" data-q="${qi}" data-o="${oi}" ${state.submitted?"disabled":""}>${esc(opt)}</button>`;
+    });
+    if(state.submitted){
+      const isCorrect = state.answers[qi] === q.correct;
+      html += `<p class="explain"><span class="mark ${isCorrect?'ok':'no'}">${isCorrect?'✓':'✕'}</span>${esc(q.explanation)}</p>`;
+    }
+    html += `</div>`;
+  });
+
+  if(!state.submitted){
+    html += `<button class="btn-primary" id="checkBtn" ${allAnswered?"":"disabled"}>
+      ${allAnswered ? "Check My Answers" : `Answer all ${lesson.quiz.length} questions`}
+    </button>`;
+  } else {
+    html += `<button class="btn-secondary" id="retryBtn">↺ Try Again</button>`;
+  }
+
+  return html;
+}
+
+function attachQuizHandlers(lessonIdx){
+  const state = quizState[lessonIdx];
+  document.querySelectorAll(".opt").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if(state.submitted) return;
+      const qi = parseInt(btn.getAttribute("data-q"), 10);
+      const oi = parseInt(btn.getAttribute("data-o"), 10);
+      state.answers[qi] = oi;
+      renderContent();
+    });
+  });
+  const checkBtn = document.getElementById("checkBtn");
+  if(checkBtn){
+    checkBtn.addEventListener("click", () => {
+      state.submitted = true;
+      renderContent();
+    });
+  }
+  const retryBtn = document.getElementById("retryBtn");
+  if(retryBtn){
+    retryBtn.addEventListener("click", () => {
+      state.answers = Array(LESSONS[lessonIdx].quiz.length).fill(null);
+      state.submitted = false;
+      renderContent();
+    });
+  }
+}
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+function selectLesson(i){
+  currentLesson = i;
+  currentTab = "read";
+  renderAll();
+}
+function selectTab(t){
+  currentTab = t;
+  renderAll();
+}
+function renderAll(){
+  renderLessonTabs();
+  renderLessonInfo();
+  renderSubTabs();
+  renderContent();
+  window.scrollTo({top:0, behavior:"instant"});
+}
+
+renderAll();
+</script>
+</body>
+</html>
